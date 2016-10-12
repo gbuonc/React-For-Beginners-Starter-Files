@@ -5,8 +5,9 @@ class Order extends React.Component{
    renderOrder(key){
       const fish = this.props.fishes[key]
       const count = this.props.order[key]
+      console.log(key, this.props.fishes, count)
       if(!fish || fish.status === 'unavailable'){
-         return <li key={key}>Sorry, {fish.name} is currently out of stock,</li>
+         return <li key={key}>Sorry, {fish.name} is currently out of stock.</li>
       }
       return (
          <li key={key}>
@@ -18,10 +19,16 @@ class Order extends React.Component{
    render(){
       const order = this.props.order
       const fishes = this.props.fishes
+      console.log(order, fishes)
       const orderIds = Object.keys(order);
       const total = orderIds.reduce((prev, key)=>{
-         const price = (fishes[key].price*order[key] || 0)
-         return prev+price
+        const fish = fishes[key]
+        const count = order[key]
+        const isAvailable = fish && fish.status === 'available';
+        if(isAvailable) {
+          return prev+ (count * fish.price || 0)
+        }
+        return prev;
       }, 0)
       return (
          <div className="order-wrap">
