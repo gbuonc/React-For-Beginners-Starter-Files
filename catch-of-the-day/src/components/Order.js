@@ -6,8 +6,9 @@ class Order extends React.Component{
       const fish = this.props.fishes[key]
       const count = this.props.order[key]
       console.log(key, this.props.fishes, count)
+
       if(!fish || fish.status === 'unavailable'){
-         return <li key={key}>Sorry, {fish.name} is currently out of stock.</li>
+         return <li key={key}>Sorry, {fish ? fish.name : 'fish'} is currently out of stock.</li>
       }
       return (
          <li key={key}>
