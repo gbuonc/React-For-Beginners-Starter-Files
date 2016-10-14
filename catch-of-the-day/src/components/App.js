@@ -7,18 +7,9 @@ import sampleFishes from '../sample-fishes'
 import base from '../base'
 
 class App extends React.Component{
-   constructor(){
-      super()
-      this.addFish = this.addFish.bind(this);
-      this.editFish = this.editFish.bind(this);
-      this.removeFish = this.removeFish.bind(this);
-      this.addToOrder = this.addToOrder.bind(this);
-      this.removeFromOrder = this.removeFromOrder.bind(this);
-      this.loadSample = this.loadSample.bind(this);
-      this.state={
-         fishes : {},
-         order:{}
-      }
+   state={
+      fishes : {},
+      order:{}
    }
    componentWillMount(){
      this.ref=base.syncState(`${this.props.params.StoreId}/fishes`, {
@@ -36,36 +27,35 @@ class App extends React.Component{
    componentWillUpdate(nextProps, nextState){
      localStorage.setItem(`order-${this.props.params.StoreId}`, JSON.stringify(nextState.order))
    }
-   addFish(fish){
+   addFish = (fish)=>{
       const fishes = {...this.state.fishes}
       const timestamp = Date.now()
       fishes[`fish-${timestamp}`]=fish
       this.setState({fishes})
     }
-    removeFish(key){
+    removeFish = (key)=>{
        const fishes = {...this.state.fishes}
        fishes[key]=null
        this.setState({fishes})
      }
-   editFish(key, updatedFish){
+   editFish = (key, updatedFish)=>{
      const fishes = {...this.state.fishes}
      fishes[key]=updatedFish
      this.setState({fishes})
    }
-   addToOrder(key){
+   addToOrder = (key)=>{
       const order = {...this.state.order}
       order[key] = order[key] ? order[key]+1 : 1
       this.setState({order})
    }
-   removeFromOrder(key){
+   removeFromOrder = (key)=>{
       const order = {...this.state.order}
       order[key] = null
       delete order[key]
       this.setState({order})
    }
-   loadSample(){
+   loadSample = ()=>{
      const fishes = sampleFishes
-
      this.setState({fishes})
    }
    render(){
