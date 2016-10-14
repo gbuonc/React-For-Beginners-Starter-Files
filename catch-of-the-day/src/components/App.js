@@ -3,16 +3,20 @@ import Header from './Header'
 import Order from './Order'
 import Inventory from './Inventory'
 import Fish from './Fish'
-// import sampleFishes from '../sample-fishes'
+import sampleFishes from '../sample-fishes'
 import base from '../base'
 
 class App extends React.Component{
    constructor(){
       super()
       this.addFish = this.addFish.bind(this);
+      this.editFish = this.editFish.bind(this);
+      this.removeFish = this.removeFish.bind(this);
       this.addToOrder = this.addToOrder.bind(this);
+      this.removeFromOrder = this.removeFromOrder.bind(this);
+      this.loadSample = this.loadSample.bind(this);
       this.state={
-         fishes : {}, //sampleFishes,
+         fishes : {},
          order:{}
       }
    }
@@ -21,10 +25,7 @@ class App extends React.Component{
        context: this,
        state: 'fishes'
      })
-   }
-   componentDidMount(){
      const localStorageRef = localStorage.getItem(`order-${this.props.params.StoreId}`)
-     console.log(localStorageRef)
      if(localStorageRef){
       this.setState({order: JSON.parse(localStorageRef)})
      }
@@ -40,11 +41,32 @@ class App extends React.Component{
       const timestamp = Date.now()
       fishes[`fish-${timestamp}`]=fish
       this.setState({fishes})
+    }
+    removeFish(key){
+       const fishes = {...this.state.fishes}
+       fishes[key]=null
+       this.setState({fishes})
+     }
+   editFish(key, updatedFish){
+     const fishes = {...this.state.fishes}
+     fishes[key]=updatedFish
+     this.setState({fishes})
    }
    addToOrder(key){
       const order = {...this.state.order}
       order[key] = order[key] ? order[key]+1 : 1
       this.setState({order})
+   }
+   removeFromOrder(key){
+      const order = {...this.state.order}
+      order[key] = null
+      delete order[key]
+      this.setState({order})
+   }
+   loadSample(){
+     const fishes = sampleFishes
+
+     this.setState({fishes})
    }
    render(){
       const fishArr = Object.keys(this.state.fishes)
@@ -57,8 +79,8 @@ class App extends React.Component{
                   {fishArr.map((fish)=><Fish key={fish} id={fish} details={fishes[fish]} addToOrder={this.addToOrder}></Fish>)}
                </ul>
             </div>
-            <Order order={this.state.order} fishes={this.state.fishes} params={this.props.params}/>
-            <Inventory addFish={this.addFish} />
+            <Order order={this.state.order} removeFromOrder={this.removeFromOrder} fishes={this.state.fishes} params={this.props.params}/>
+            <Inventory addFish={this.addFish} editFish={this.editFish} removeFish={this.removeFish} fishes={this.state.fishes} loadSample={this.loadSample}/>
          </div>
       )
    }
